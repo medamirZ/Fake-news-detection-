@@ -50,7 +50,7 @@ Each team member works only on **one dedicated branch**.
 
 | Branch | Owner | Work |
 |--------|--------|------|
-| `data-exploration` | You | EDA, summaries, profiling |
+| `data-exploration` | Member0 | EDA, summaries, profiling |
 | `data-cleaning` | Member 1 | Handling NaN, duplicates, preprocessing |
 | `data-transformation` | Member 2 | Encoding, feature engineering |
 | `modeling` | Member 3 | ML models, evaluation |

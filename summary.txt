@@ -1,0 +1,112 @@
+the dataset based on the "columns_description.py" contains  : 
+
+9 columns of type object , 5 columns of type float64
+
+
+ 0   Id                    12791 non-null  object 
+ 1   Label                 12791 non-null  object 
+ 2   Statement             12791 non-null  object 
+ 3   Subject               12789 non-null  object
+ 4   Speaker               12789 non-null  object
+ 5   Speaker Job Title     9223 non-null   object
+ 6   State Info            10040 non-null  object
+ 7   Party Affiliation     12789 non-null  object
+ 8   Barely True Counts    12789 non-null  float64
+ 9   False Counts          12789 non-null  float64
+ 10  Half True Counts      12789 non-null  float64
+ 11  Mostly True Counts    12789 non-null  float64
+ 12  Pants on Fire Counts  12789 non-null  float64
+ 13  Context               12660 non-null  object 
+
+dataset shape = (12791, 14)
+
+NULL VALUES  :
+the dataset contains null and nan values as it shown here : 
+
+Id                         0
+Label                      0
+Statement                  0
+Subject                    2
+Speaker                    2
+Speaker Job Title       3568
+State Info              2751
+Party Affiliation          2
+Barely True Counts         2
+False Counts               2
+Half True Counts           2
+Mostly True Counts         2
+Pants on Fire Counts       2
+Context                  131
+dtype: int64
+
+speaker Job Title and State Info columns have a lot of null values 
+[ 3568,2751 ]
+a percentage of 27.9% and 21.5% for each.
+                    ///
+-- There is 11 columns that contains null or missing values that needs to be handled 
+    columns of type object (Subject,Speaker,Speaker Job Title,State Info,Party Affiliation,Context)
+    columns of type float (all 5 count columns {Barely True Counts,False Counts ....} )
+
+starting with float columns ====>>>
+
+Float columns summary:
+Rows with null values in column Barely True Counts:
+             Id  Barely True Counts
+2142   638.json                 NaN
+9375  1626.json                 NaN
+
+Rows with null values in column False Counts:
+             Id  False Counts
+2142   638.json           NaN
+9375  1626.json           NaN
+
+Rows with null values in column Half True Counts:
+             Id  Half True Counts
+2142   638.json               NaN
+9375  1626.json               NaN
+
+Rows with null values in column Mostly True Counts:
+             Id  Mostly True Counts
+2142   638.json                 NaN
+9375  1626.json                 NaN
+
+Rows with null values in column Pants on Fire Counts:
+             Id  Pants on Fire Counts
+2142   638.json                   NaN
+9375  1626.json                   NaN
+
+
+* How to handle these missing values ?
+first i just notices all rows in each column has the same id so it assumes that there is 2 rows that doesnt have history counts at all.
+solution = > delete the rows since these rows are essential and they represent whether the statement is true or not 
+AND this number of 2 rows doesnt affect 12K rows.
+
+with this solution float columns => OK
+
+Moving to Object columns : 
+Id : in a format of id.json == > json should be removed 
+duplicates in Id => 0  (checked with check_duplicates function)
+Is there any duplicated rows ? === > True (checked with merged_df.drop(columns=['Id']).duplicated().any())
+How many ? === > 1 (.sum())
+
+Are Duplicate exists on column Id :
+False
+
+Are Duplicates exists on all  rest  columns :
+True  >>> checked with check_duplicates(loop through all cols)
+
+Rows duplicated = 1 row duplicated (found using the filter filt_dup_rows) 
+Action = > Remove the duplicated row
+
+* Handling of object-column missing values :
+Subject => replace with Unknown     
+Speaker => Drop entire row since the speaker is so IMPORTANT.
+Speaker Job Title => replace with Unknown
+State Info => replace with Unknown                             
+Party Affiliation => Must drop the entire row (so IMPORTANT feature to detect liars)
+Context => replace with Unknown
+
+*After cleaning the shape of the dataset must be (12791-(2+1), 14) #1 duplicated row #2 missing counts values
+///////
+VERY IMPORTANT NOTE : 
+The counts are depending on the speaker's history not the statement.

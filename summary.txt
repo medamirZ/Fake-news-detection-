@@ -110,3 +110,12 @@ Context => replace with Unknown
 ///////
 VERY IMPORTANT NOTE : 
 The counts are depending on the speaker's history not the statement.
+
+
+
+Missing values in Speaker Job Title  : 
+We shouldn't get missing values based on the other columns
+like label or statement cause it may create a "label leakage" 
+and this means the model later would learn in a wrong way 
+It will look good on testing but bad in real new data cuz it didnt 
+learn how to generalise.
